@@ -1,1 +1,30 @@
 @import "tailwindcss";
+@import url('https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap');
+
+@theme {
+    /* Define your Brand Colors as Design Tokens */
+    --color-primary: #2563eb;
+    --color-primary-dark: #1e40af;
+    --color-secondary: #64748b;
+    --color-accent: #f59e0b;
+
+    /* Define UI Surface Colors */
+    --color-bg-main: #f8fafc;
+    --color-card-bg: #ffffff;
+
+    /* Define your Custom Font */
+    --font-inter: "Inter", sans-serif;
+}
+
+/* 4. Global Base Styles */
+@layer base {
+    body {
+        font-family: var(--font-inter), serif;
+        background-color: var(--color-bg-main);
+        /* v4 auto-generates shades if using standard names, or use raw hex */
+    }
+
+    body {
+        color: var(--color-secondary-900);
+    }
+}

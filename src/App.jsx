@@ -1,5 +1,7 @@
+import AppRoutes from "./routes/AppRoutes.jsx";
+
 function App() {
-    return <h1>Genkart App</h1>
+    return <AppRoutes />
 }
 
 export default App
