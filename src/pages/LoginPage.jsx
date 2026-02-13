@@ -1,10 +1,13 @@
-import React, {useRef, useState} from 'react'
+import React, {useState} from 'react'
 import {auth} from "../config/firebaseConfig.js"
 import { fetchSignInMethodsForEmail, signInWithEmailAndPassword } from "firebase/auth";
 import Email from "../components/Email.jsx";
-import NextButton from "../components/NextButton.jsx";
 import {Password} from "../components/Password.jsx";
-import LoginButton from "../components/LoginButton.jsx";
+import {Link, useNavigate} from "react-router-dom";
+import Button from "../components/Button.jsx";
+import {ChevronRight, LogIn} from "lucide-react";
+import {emailValidator} from "../utils/emailValidator.js";
+
 
 export const LoginPage = () => {
     const[email, setEmail] = useState('');
@@ -12,6 +15,7 @@ export const LoginPage = () => {
     const [name, setName] = useState('');
     const [step, setStep] = useState(1);
     const [error, setError] = useState('');
+    const navigate = useNavigate();
 
     const emailAction = (event) =>{
         setEmail(event.target.value);
@@ -25,20 +29,13 @@ export const LoginPage = () => {
         event.preventDefault();
 
         setError('');
+        const emailValidation = emailValidator(email);
 
-        if(step === 1)
-        {
-            const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        if(step === 1) {
 
-            if (email === ""){
-                setError("Email is required");
-            }
-
-            else if(!emailPattern.test(email)){
-                setError("Please enter a valid email address (eg: name@gmail.com)");
-            }
-
-            else {
+            if (error !== emailValidation) {
+                setError(emailValidation);
+            } else {
                 try {
                     const methods = await fetchSignInMethodsForEmail(auth, email);
 
@@ -53,7 +50,6 @@ export const LoginPage = () => {
                     setError(error);
                 }
             }
-
         }
         else if(step === 2){
             if(password === ""){
@@ -62,15 +58,9 @@ export const LoginPage = () => {
             else{
                 const userCredential = await signInWithEmailAndPassword(auth, email, password);
                 const user = userCredential.user;
-                alert("Successfully logged in!: ", user);
+                navigate("/home");
             }
         }
-
-        // else{
-        //     setName(email.split('@')[0]);
-        //     setStep(2);
-        //
-        // }
 
     }
 
@@ -82,10 +72,14 @@ export const LoginPage = () => {
                 </h2>
                 <form className="space-y-6" onSubmit={submitHandler}>
                     {step === 1 && <Email value={email} action={emailAction} />}
-                    {step === 2 && <Password  value={password} action={passwordAction} />}
+                    {step === 2 && <Password  value={password} action={passwordAction} placeholder="Password" />}
                     <span className="text-red-600">{error}</span>
-                    {step === 1 && <NextButton />}
-                    {step === 2 && <LoginButton />}
+                    {step === 1 && <Button buttonType="submit" buttonText="Next" buttonIcon={<ChevronRight />}/>}
+                    {step === 1 && <Link to="/signup">Create Account</Link>}
+                    {step === 2 && <Button buttonType="submit" buttonText="Login" buttonIcon={<LogIn/>}/>}
+
+
+
                 </form>
             </div>
         </div>
